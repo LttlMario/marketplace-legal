@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Intern</title>
+    <style>
+        /* Paleta de culori inspirată din imaginea furnizată (Dark Blue & Modern UI) */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 1400px; 
+            margin: 20px auto; 
+            padding: 20px; 
+            background: #0b0f19; /* Fundal general închis ca în imagine */
+            color: #f8fafc; /* Text deschis ușor de citit */
+        }
+        
+        /* Titlul și subitlul centrate */
+        .header-center { text-align: center; margin-bottom: 35px; }
+        .header-center h1 { margin-bottom: 5px; font-size: 32px; color: #f8fafc; text-transform: uppercase; letter-spacing: 1px; }
+        .header-center .subtitle { color: #3b82f6; font-size: 14px; margin-top: 0; font-weight: 500; }
+
+        /* Layout pe două coloane */
+        .container { display: flex; gap: 30px; align-items: flex-start; }
+        .col-left { flex: 1; min-width: 380px; }
+        .col-right { flex: 1.5; }
+
+        /* Formular și containere în stilul din imagine */
+        input, select, textarea, button { 
+            width: 100%; 
+            padding: 11px; 
+            margin: 5px 0 15px 0; 
+            background: #0b0f19; 
+            border: 1px solid #1e293b; 
+            color: #f8fafc; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3b82f6;
+            outline: none;
+        }
+
+        button { 
+            background: #1e293b; /* Buton stil panel închis */
+            color: #ef4444; /* Text roșu pentru butoane / acțiuni similare cu reset */
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: background 0.2s, border-color 0.2s;
+            border: 1px solid #334155;
+        }
+        button:hover { background: #334155; border-color: #ef4444; }
+
+        form, .filter-container { 
+            background: #111827; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e293b;
+        }
+
+        /* Grid și Carduri pentru afișarea tip modern */
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .market-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .market-card:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+        }
+
+        .market-card-header {
+            margin-bottom: 8px;
+        }
+
+        .market-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f8fafc;
+            display: block;
+        }
+
+        .seller-info {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .badges-wrapper {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .market-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-vanzare {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+        }
+
+        .badge-cumparare {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .market-category {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .produse-text {
+            white-space: pre-line;
+            margin: 8px 0;
+            background: #0b0f19;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #1e293b;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        /* Stil pentru textul URL-ului imaginii afișat sub produse */
+        .image-url-text {
+            font-size: 0.75rem;
+            color: #3b82f6;
+            word-break: break-all;
+            margin: 6px 0 10px 0;
+            background: rgba(59, 130, 246, 0.08);
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: 1px dashed #3b82f6;
+        }
+
+        .market-footer {
+            border-top: 1px solid #1e293b;
+            padding-top: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .market-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        img { max-width: 100%; border-radius: 6px; margin-top: 10px; object-fit: cover; max-height: 160px; width: 100%; }
+        
+        .data-postarii { 
+            font-size: 11px; 
+            color: #94a3b8; 
+            text-align: right; 
+        }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <!-- Titlul și subitlul în mijloc -->
+    <div class="header-center">
+        <div style="display: inline-flex; background: #111827; border: 1px solid #1e293b; padding: 12px; border-radius: 50%; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        </div>
+        <h1>Marketplace Intern</h1>
+        <p class="subtitle">by Little Mario</p>
+    </div>
+
+    <div class="container">
+        <!-- COLOANA STANGA: Adăugare Anunț -->
+        <div class="col-left">
+            <form id="marketForm">
+                <h3 style="color: #f8fafc; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">Adaugă Anunț Nou</h3>
+                <label>Nume:</label>
+                <input type="text" id="nume" required>
+
+                <label>Nr. tel.:</label>
+                <input type="text" id="telefon" required>
+
+                <label>Vanzare / Cumparare:</label>
+                <select id="tipAcțiune">
+                    <option value="Vânzare">Vânzare</option>
+                    <option value="Cumpărare">Cumpărare</option>
+                </select>
+
+                <label>Categorie:</label>
+                <select id="categorie">
+                    <option value="CASE">CASE</option>
+                    <option value="VEHICULE">VEHICULE</option>
+                    <option value="SERVICII">SERVICII</option>
+                    <option value="BUNURI">BUNURI</option>
+                </select>
+
+                <label>Produse (folosește Enter):</label>
+                <textarea id="produse" rows="4" placeholder="- Produs 1&#10;- Produs 2" required></textarea>
+
+                <label>Preț (Obligatoriu):</label>
+                <input type="text" id="pret" placeholder="Ex: 1500 sau 10000 sau Negociabil" required>
+
+                <label>Imagine URL (Opțional):</label>
+                <input type="text" id="imagine_url" placeholder="https://exemplu.com/poza.jpg">
+
+                <button type="submit" style="color: #f8fafc; background: #3b82f6; border: none;">Publică Anunțul</button>
+            </form>
+        </div>
+
+        <!-- COLOANA DREAPTA: Filtrare și Anunțuri Active sub formă de Grid Modern -->
+        <div class="col-right">
+            <div class="filter-container">
+                <h3 style="color: #f8fafc; font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">Filtrează Anunțurile</h3>
+                <label>Selectează Categoria:</label>
+                <select id="filtruCategorie" onchange="incarcaAnunturi()">
+                    <option value="TOATE">Toate Categoriile</option>
+                    <option value="CASE">CASE</option>
+                    <option value="VEHICULE">VEHICULE</option>
+                    <option value="SERVICII">SERVICII</option>
+                    <option value="BUNURI">BUNURI</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h2 style="margin: 0; font-size: 20px; color: #f8fafc;">Anunțuri Active</h2>
+                <span id="itemCount" style="font-size: 0.85rem; color: #94a3b8;">0 produse</span>
+            </div>
+
+            <div id="listaAnunturi" class="marketplace-grid">Se încarcă...</div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://jgrgymrbdnnuvtqbypwj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impncmd5bXJiZG5udXZ0cWJ5cHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NzEzNzYsImV4cCI6MjEwMDQ0NzM3Nn0.FLwEMkYI8LkjWFYq5-Z-wcgUb47hLAYWEk0HspHOdqA'; 
+
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function incarcaAnunturi() {
+            const container = document.getElementById('listaAnunturi');
+            const filtru = document.getElementById('filtruCategorie').value;
+            container.innerHTML = 'Se încarcă...';
+
+            const { data, error } = await _supabase
+                .from('marketplace')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = 'Erore la încărcarea datelor: ' + error.message;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 20px;">Nu există anunțuri momentan.</p>';
+                document.getElementById('itemCount').innerText = '0 produse';
+                return;
+            }
+
+            const anunturiFiltrate = data.filter(item => {
+                if (filtru === 'TOATE') return true;
+                return item.categorie === filtru || (item.produse && item.produse.includes(`[${filtru}]`));
+            });
+
+            document.getElementById('itemCount').innerText = `${anunturiFiltrate.length} produse`;
+
+            if (anunturiFiltrate.length === 0) {
+                container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 20px;">Nu există anunțuri în categoria ${filtru}.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            anunturiFiltrate.forEach(item => {
+                let dataFormatata = '';
+                if (item.created_at) {
+                    const dataObj = new Date(item.created_at);
+                    dataFormatata = dataObj.toLocaleString('ro-RO', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+
+                let tipBadge = item.tip_actiune || 'Vânzare';
+                let badgeClass = tipBadge === 'Cumpărare' ? 'badge-cumparare' : 'badge-vanzare';
+                let catBadge = item.categorie || '';
+
+                if (!catBadge && item.produse) {
+                    ['CASE', 'VEHICULE', 'SERVICII', 'BUNURI'].forEach(cat => {
+                        if (item.produse.includes(`[${cat}]`)) {
+                            catBadge = cat;
+                        }
+                    });
+                }
+
+                let textCurat = item.produse || '';
+                textCurat = textCurat.replace(/\[(Vânzare|Cumpărare)\]/gi, '').replace(/\[(CASE|VEHICULE|SERVICII|BUNURI)\]/gi, '').trim();
+
+                // Construim secțiunea pentru imaginea URL (afișăm textul URL-ului și imaginea imediat sub produse)
+                let imagineSectiune = '';
+                if (item.imagine_url && item.imagine_url.trim() !== '') {
+                    const urlCurat = escapeHtml(item.imagine_url.trim());
+                    imagineSectiune = `
+                        <div class="image-url-text"><strong>URL Imagine:</strong> ${urlCurat}</div>
+                        <img src="${urlCurat}" alt="Imagine produs" onerror="this.style.display='none'">
+                    `;
+                }
+
+                container.innerHTML += `
+                    <div class="market-card">
+                        <div>
+                            <div class="market-card-header">
+                                <span class="market-title">${escapeHtml(item.nume || '')}</span>
+                                <div class="seller-info">Tel: ${escapeHtml(item.telefon || '')}</div>
+                            </div>
+                            <div class="badges-wrapper" style="margin-top: 10px;">
+                                <span class="market-badge ${badgeClass}">${tipBadge}</span>
+                                ${catBadge ? `<span class="market-badge market-category">${catBadge}</span>` : ''}
+                            </div>
+                            <div class="produse-text">${escapeHtml(textCurat)}</div>
+                            ${imagineSectiune}
+                        </div>
+                        <div class="market-footer">
+                            <div>
+                                ${item.pret ? `<div class="market-price">${escapeHtml(item.pret)}</div>` : ''}
+                            </div>
+                            <div>
+                                ${dataFormatata ? `<div class="data-postarii">Publicat: ${dataFormatata}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('marketForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            let pretValoare = document.getElementById('pret').value.trim();
+
+            if (pretValoare === '') {
+                alert('Trebuie să completezi prețul sau să scrii "negociabil" pentru a putea publica anunțul!');
+                return;
+            }
+
+            if (/^\d+$/.test(pretValoare)) {
+                let numar = parseInt(pretValoare, 10);
+                if (numar >= 10000) {
+                    pretValoare = numar.toLocaleString('ro-RO');
+                }
+                pretValoare += '$';
+            } else {
+                const contineLitere = /[a-zA-ZăâîșțĂĂÎȘȚ]/i.test(pretValoare);
+                if (!contineLitere && !pretValoare.includes('$')) {
+                    pretValoare += '$';
+                }
+            }
+
+            const tipSelectat = document.getElementById('tipAcțiune').value;
+            const categorieSelectata = document.getElementById('categorie').value;
+            const textProdus = document.getElementById('produse').value;
+            const imagineUrlValoare = document.getElementById('imagine_url').value.trim();
+
+            const nouAnunt = {
+                nume: document.getElementById('nume').value,
+                telefon: document.getElementById('telefon').value,
+                tip_actiune: tipSelectat,
+                categorie: categorieSelectata,
+                produse: textProdus,
+                pret: pretValoare,
+                imagine_url: imagineUrlValoare !== '' ? imagineUrlValoare : null
+            };
+
+            const { error } = await _supabase
+                .from('marketplace')
+                .insert([nouAnunt]);
+
+            if (error) {
+                alert('Erore la salvare: ' + error.message);
+            } else {
+                alert('Anunț publicat cu succes!');
+                document.getElementById('marketForm').reset();
+                incarcaAnunturi();
+            }
+        });
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        incarcaAnunturi();
+    </script>
+
+</body>
+</html>
