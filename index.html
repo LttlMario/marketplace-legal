@@ -261,6 +261,9 @@
         const SUPABASE_URL = 'https://jgrgymrbdnnuvtqbypwj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impncmd5bXJiZG5udXZ0cWJ5cHdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NzEzNzYsImV4cCI6MjEwMDQ0NzM3Nn0.FLwEMkYI8LkjWFYq5-Z-wcgUb47hLAYWEk0HspHOdqA'; 
 
+        // Introdu aici link-ul tău de Webhook de pe Discord
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1530165109572505621/e5GFTqG5bFhCuan1sgj8KLJkkOEqb6cl2VOyCLWjGOeA3-eNT8nw24tyRFw5Qyxk0ysB';
+
         const { createClient } = supabase;
         const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -326,7 +329,6 @@
                 let textCurat = item.produse || '';
                 textCurat = textCurat.replace(/\[(Vânzare|Cumpărare)\]/gi, '').replace(/\[(CASE|VEHICULE|SERVICII|BUNURI)\]/gi, '').trim();
 
-                // Construim secțiunea pentru imaginea URL (afișăm textul URL-ului și imaginea imediat sub produse)
                 let imagineSectiune = '';
                 if (item.imagine_url && item.imagine_url.trim() !== '') {
                     const urlCurat = escapeHtml(item.imagine_url.trim());
@@ -361,6 +363,39 @@
                     </div>
                 `;
             });
+        }
+
+        // Funcția de trimitere pe Discord
+        async function trimitePeDiscord(anunt) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('URL_UL_TAU_DE_DISCORD_AICI')) return;
+
+            const payload = {
+                embeds: [
+                    {
+                        title: '📢 Anunț Nou - Marketplace Intern',
+                        color: 38159,
+                        fields: [
+                            { name: '👤 Nume', value: anunt.nume, inline: true },
+                            { name: '📞 Telefon', value: anunt.telefon, inline: true },
+                            { name: '📌 Tip Acțiune', value: anunt.tip_actiune, inline: true },
+                            { name: '📁 Categorie', value: anunt.categorie, inline: false },
+                            { name: '📦 Produse / Detalii', value: anunt.produse, inline: false },
+                            { name: '💰 Preț', value: anunt.pret, inline: true }
+                        ],
+                        footer: { text: 'Publicat prin Marketplace Intern' }
+                    }
+                ]
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error('Erore la trimiterea pe Discord:', err);
+            }
         }
 
         document.getElementById('marketForm').addEventListener('submit', async (e) => {
@@ -408,6 +443,9 @@
             if (error) {
                 alert('Erore la salvare: ' + error.message);
             } else {
+                // Trimite notificarea pe Discord după ce s-a salvat cu succes în Supabase
+                await trimitePeDiscord(nouAnunt);
+
                 alert('Anunț publicat cu succes!');
                 document.getElementById('marketForm').reset();
                 incarcaAnunturi();
